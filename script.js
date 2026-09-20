@@ -307,6 +307,19 @@ startButton.addEventListener(
 
 function startGame() {
 
+    // スマホ操作ガイドを表示
+    mobileGuide.classList.remove("hidden");
+
+    // 5秒後に消す
+    setTimeout(() => {
+        mobileGuide.classList.add("hidden");
+    }, 5000);
+
+    // 以下、元々のゲーム開始処理
+    score = 0;
+    scoreValue.textContent = score;
+
+
     loadingScreen.classList.add("hidden");
 
     titleScreen.classList.add("hidden");
@@ -319,7 +332,7 @@ function startGame() {
     gameScreen.classList.remove("hidden");
 
 
-    mobileGuide.classList.remove("hidden");
+
 
     bgm.currentTime = 0;
 
