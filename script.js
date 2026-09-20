@@ -1303,7 +1303,7 @@ async function showRanking(myName) {
 
 
             li.textContent =
-                `${rank}位　${entry.name}　${entry.score}体`;
+                `位　${entry.name}　${entry.score}体`;
 
 
             rankingList.appendChild(li);
@@ -1318,7 +1318,7 @@ async function showRanking(myName) {
         if (myIndex === -1) {
 
             rankingMessage.textContent =
-                "101位以下は圏外です！";
+                "圏外";
 
         } else {
 
