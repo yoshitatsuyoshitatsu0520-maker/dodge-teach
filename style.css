@@ -123,7 +123,7 @@ body {
 #runningTeach {
     position: absolute;
 
-    left: 20px;
+    left: 50px;
     bottom: 20px;
 
     width: clamp(120px, 22vw, 260px);
@@ -139,7 +139,7 @@ body {
 
 @media (max-width: 600px) {
     #runningTeach {
-        width: 110px;
+        width: 80px;
         left: 5px;
         bottom: 10px;
     }
