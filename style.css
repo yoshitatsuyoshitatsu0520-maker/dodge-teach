@@ -113,12 +113,42 @@ body {
 /* =========================================
    タイトル画面
 ========================================= */
+/* =========================================
+   タイトル画面
+========================================= */
+/* =========================================
+   タイトル画面の走るティーチ
+========================================= */
 
+#runningTeach {
+    position: absolute;
+
+    left: 20px;
+    bottom: 20px;
+
+    width: clamp(120px, 22vw, 260px);
+
+    height: auto;
+
+    object-fit: contain;
+
+    pointer-events: none;
+
+    z-index: 1;
+}
+
+@media (max-width: 600px) {
+    #runningTeach {
+        width: 110px;
+        left: 5px;
+        bottom: 10px;
+    }
+}
 #titleScreen {
     background:
-        radial-gradient(circle at 15% 20%, #ffffff 0 4%, transparent 5%),
-        radial-gradient(circle at 85% 75%, #ffffff 0 5%, transparent 6%),
-        linear-gradient(180deg, #cfe4f7, #eaf3fb);
+        radial-gradient(circle at 15% 20%, #cfe4f7 0 4%, transparent 5%),
+        radial-gradient(circle at 85% 75%, #cfe4f7 0 5%, transparent 6%),
+        linear-gradient(180deg, #ffffff, #eaf3fb);
 }
 
 #titleScreen h1 {
@@ -144,7 +174,6 @@ body {
 
     font-size: clamp(14px, 4vw, 20px);
 }
-
 /* =========================================
    ボタン
 ========================================= */
@@ -285,8 +314,8 @@ button {
 
     bottom: 20px;
 
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
 
     z-index: 20;
 
@@ -306,8 +335,8 @@ button {
 
     top: -100px;
 
-    width: 150px;
-    height: 150px;
+    width: 100px;
+    height: 100px;
 
     object-fit: contain;
 
@@ -557,14 +586,14 @@ button {
     }
 
     .player {
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
         bottom: 30px;
     }
 
     .enemy {
-        width: 150px;
-        height: 150px;
+        width: 100px;
+        height: 100px;
     }
 
     #mobileGuide {
