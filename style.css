@@ -629,3 +629,32 @@ button {
         font-size: 24px;
     }
 }
+
+/* =========================================
+   スマホ用タイトル画面調整
+========================================= */
+
+@media (max-width: 600px) {
+
+    #titleScreen {
+        padding: 20px;
+        overflow: hidden;
+    }
+
+    #titleScreen h1 {
+        font-size: clamp(36px, 12vw, 58px);
+        line-height: 1.2;
+    }
+
+    #titleScreen p {
+        margin: 18px 0 25px;
+        font-size: 15px;
+    }
+
+    #runningTeach {
+        width: 100px;
+        left: 5px;
+        bottom: 5px;
+    }
+
+}
