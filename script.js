@@ -1162,33 +1162,78 @@ async function showRanking(myName) {
 
 
         const snapshot =
-            await getDocs(
-                rankingQuery
-            );
+            await getDocs(rankingQuery);
 
 
-        const rankings = [];
+        // =================================
+        // 名前ごとに最高記録だけ残す
+        // =================================
+
+        const bestScores = new Map();
 
 
-        snapshot.forEach(
-            (doc) => {
+        snapshot.forEach((doc) => {
 
-                rankings.push({
+            const data = doc.data();
 
+            const name =
+                data.name || "名無し";
+
+            const score =
+                Number(data.score || 0);
+
+
+            // まだ登録されていない名前
+            if (!bestScores.has(name)) {
+
+                bestScores.set(name, {
                     id: doc.id,
+                    name: name,
+                    score: score
+                });
 
-                    name:
-                        doc.data().name || "名無し",
+                return;
+            }
 
-                    score:
-                        Number(
-                            doc.data().score || 0
-                        )
 
+            // すでに登録されているなら
+            // 高いスコアだけ残す
+            const current =
+                bestScores.get(name);
+
+
+            if (score > current.score) {
+
+                bestScores.set(name, {
+                    id: doc.id,
+                    name: name,
+                    score: score
                 });
 
             }
-        );
+
+        });
+
+
+        // =================================
+        // Map → 配列
+        // =================================
+
+        const rankings =
+            Array.from(
+                bestScores.values()
+            );
+
+
+        // =================================
+        // スコア順に並べる
+        // =================================
+
+        rankings.sort((a, b) => {
+
+            return b.score - a.score;
+
+        });
 
 
         // =================================
@@ -1196,56 +1241,52 @@ async function showRanking(myName) {
         // =================================
 
         const myIndex =
-            rankings.findIndex(
-                (entry) => {
+            rankings.findIndex((entry) => {
 
-                    return (
-                        entry.name === myName &&
-                        entry.score === score
-                    );
+                return (
+                    entry.name === myName &&
+                    entry.score === score
+                );
 
-                }
-            );
+            });
 
 
         // =================================
-        // リストを空にする
+        // ランキングを空にする
         // =================================
 
         rankingList.innerHTML = "";
 
 
         // =================================
-        // TOP10
+        // TOP10表示
         // =================================
 
         const top10 =
             rankings.slice(0, 10);
 
 
-        top10.forEach(
-            (entry, index) => {
+        top10.forEach((entry, index) => {
 
-                const li =
-                    document.createElement("li");
-
-
-                const rank =
-                    index + 1;
+            const li =
+                document.createElement("li");
 
 
-                li.textContent =
-                    `${rank}位　${entry.name}　${entry.score}体`;
+            const rank =
+                index + 1;
 
 
-                rankingList.appendChild(li);
+            li.textContent =
+                `${rank}位　${entry.name}　${entry.score}体`;
 
-            }
-        );
+
+            rankingList.appendChild(li);
+
+        });
 
 
         // =================================
-        // 自分の順位メッセージ
+        // 自分の順位
         // =================================
 
         if (myIndex === -1) {
@@ -1273,7 +1314,6 @@ async function showRanking(myName) {
             "hidden"
         );
 
-
         rankingScreen.classList.remove(
             "hidden"
         );
@@ -1281,7 +1321,6 @@ async function showRanking(myName) {
 
         rankingSubmitButton.disabled =
             false;
-
 
         rankingSubmitButton.textContent =
             "ランキングに登録！";
@@ -1302,14 +1341,12 @@ async function showRanking(myName) {
         rankingSubmitButton.disabled =
             false;
 
-
         rankingSubmitButton.textContent =
             "ランキングに登録！";
 
     }
 
 }
-
 
 // =========================================
 // リトライ
