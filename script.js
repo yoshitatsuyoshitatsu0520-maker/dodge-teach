@@ -5,26 +5,102 @@
 
 
 // =========================================
+// Firebase
+// =========================================
+
+import { initializeApp } from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js";
+
+import {
+    getFirestore,
+    collection,
+    addDoc,
+    getDocs,
+    query,
+    orderBy,
+    limit,
+    serverTimestamp
+} from
+    "https://www.gstatic.com/firebasejs/12.19.0/firebase-firestore.js";
+
+
+const firebaseConfig = {
+    apiKey: "AIzaSyAIwaGRB6ffUB1t7emLsXqFpfYDQ5d7WjQ",
+    authDomain: "teach-fanclub.firebaseapp.com",
+    projectId: "teach-fanclub",
+    storageBucket: "teach-fanclub.firebasestorage.app",
+    messagingSenderId: "350154920039",
+    appId: "1:350154920039:web:20f0f1c2fbe0780e1044c2"
+};
+
+
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
+
+// ランキング専用コレクション
+const rankingCollection =
+    collection(db, "dodgeRanking");
+
+
+// =========================================
 // 画面取得
 // =========================================
 
-const loadingScreen = document.getElementById("loadingScreen");
-const titleScreen = document.getElementById("titleScreen");
-const gameScreen = document.getElementById("gameScreen");
-const gameOverScreen = document.getElementById("gameOverScreen");
-const rankingScreen = document.getElementById("rankingScreen");
+const loadingScreen =
+    document.getElementById("loadingScreen");
 
-const loadingProgress = document.getElementById("loadingProgress");
-const loadingPercent = document.getElementById("loadingPercent");
+const titleScreen =
+    document.getElementById("titleScreen");
 
-const startButton = document.getElementById("startButton");
+const gameScreen =
+    document.getElementById("gameScreen");
 
-const gameField = document.getElementById("gameField");
+const gameOverScreen =
+    document.getElementById("gameOverScreen");
 
-const scoreValue = document.getElementById("scoreValue");
-const finalScore = document.getElementById("finalScore");
+const rankingScreen =
+    document.getElementById("rankingScreen");
 
-const mobileGuide = document.getElementById("mobileGuide");
+const loadingProgress =
+    document.getElementById("loadingProgress");
+
+const loadingPercent =
+    document.getElementById("loadingPercent");
+
+const startButton =
+    document.getElementById("startButton");
+
+const gameField =
+    document.getElementById("gameField");
+
+const scoreValue =
+    document.getElementById("scoreValue");
+
+const finalScore =
+    document.getElementById("finalScore");
+
+const playerName =
+    document.getElementById("playerName");
+
+const rankingSubmitButton =
+    document.getElementById("rankingSubmitButton");
+
+const rankingList =
+    document.getElementById("rankingList");
+
+const rankingMessage =
+    document.getElementById("rankingMessage");
+
+const retryButton =
+    document.getElementById("retryButton");
+
+const mobileGuide =
+    document.getElementById("mobileGuide");
+
+const dadaEvent =
+    document.getElementById("dadaEvent");
 
 
 // =========================================
@@ -49,8 +125,6 @@ const PLAYER_HEIGHT = 90;
 
 const ENEMY_WIDTH = 75;
 const ENEMY_HEIGHT = 75;
-
-const PLAYER_BOTTOM = 20;
 
 const MAX_ENEMIES = 3;
 
@@ -95,26 +169,34 @@ function preloadImages() {
             return;
         }
 
+
         imageList.forEach((src) => {
 
             const img = new Image();
+
 
             img.onload = () => {
 
                 loaded++;
 
-                const percent = Math.floor(
-                    (loaded / total) * 100
-                );
+                const percent =
+                    Math.floor(
+                        (loaded / total) * 100
+                    );
 
-                loadingProgress.style.width = percent + "%";
-                loadingPercent.textContent = percent + "%";
+                loadingProgress.style.width =
+                    percent + "%";
+
+                loadingPercent.textContent =
+                    percent + "%";
+
 
                 if (loaded >= total) {
                     resolve();
                 }
 
             };
+
 
             img.onerror = () => {
 
@@ -125,18 +207,24 @@ function preloadImages() {
 
                 loaded++;
 
-                const percent = Math.floor(
-                    (loaded / total) * 100
-                );
+                const percent =
+                    Math.floor(
+                        (loaded / total) * 100
+                    );
 
-                loadingProgress.style.width = percent + "%";
-                loadingPercent.textContent = percent + "%";
+                loadingProgress.style.width =
+                    percent + "%";
+
+                loadingPercent.textContent =
+                    percent + "%";
+
 
                 if (loaded >= total) {
                     resolve();
                 }
 
             };
+
 
             img.src = src;
 
@@ -148,7 +236,7 @@ function preloadImages() {
 
 
 // =========================================
-// ゲーム開始前の読み込み
+// 初期化
 // =========================================
 
 async function initializeGame() {
@@ -156,29 +244,36 @@ async function initializeGame() {
     await preloadImages();
 
     loadingPercent.textContent = "100%";
+
     loadingProgress.style.width = "100%";
+
 
     setTimeout(() => {
 
         loadingScreen.classList.add("hidden");
+
         titleScreen.classList.remove("hidden");
 
     }, 500);
 
 }
 
+
 initializeGame();
 
 
 // =========================================
-// スタートボタン
+// スタート
 // =========================================
 
-startButton.addEventListener("click", () => {
+startButton.addEventListener(
+    "click",
+    () => {
 
-    startGame();
+        startGame();
 
-});
+    }
+);
 
 
 // =========================================
@@ -187,40 +282,46 @@ startButton.addEventListener("click", () => {
 
 function startGame() {
 
-    // 他の画面を隠す
     loadingScreen.classList.add("hidden");
+
     titleScreen.classList.add("hidden");
+
     gameOverScreen.classList.add("hidden");
+
     rankingScreen.classList.add("hidden");
 
-    // ゲーム画面表示
+
     gameScreen.classList.remove("hidden");
 
-    // スマホ案内
+
     mobileGuide.classList.remove("hidden");
 
-    // 初期化
+
     score = 0;
+
     scoreValue.textContent = "0";
 
     enemySpeed = 180;
 
     enemies = [];
 
+
     gameField.innerHTML = "";
+
 
     gameRunning = true;
 
-    // ティーチ作成
+
     createPlayer();
 
-    // 敵出現開始
+
     startEnemySpawner();
 
-    // ゲームループ開始
+
     lastTime = performance.now();
 
-    animationId = requestAnimationFrame(gameLoop);
+    animationId =
+        requestAnimationFrame(gameLoop);
 
 }
 
@@ -231,18 +332,26 @@ function startGame() {
 
 function createPlayer() {
 
-    player = document.createElement("img");
+    player =
+        document.createElement("img");
 
-    player.src = "images/teach.png";
+    player.src =
+        "images/teach.png";
 
-    player.className = "player";
+    player.className =
+        "player";
+
 
     gameField.appendChild(player);
 
-    const fieldWidth = gameField.clientWidth;
+
+    const fieldWidth =
+        gameField.clientWidth;
+
 
     playerX =
         (fieldWidth - PLAYER_WIDTH) / 2;
+
 
     updatePlayerPosition();
 
@@ -250,7 +359,7 @@ function createPlayer() {
 
 
 // =========================================
-// プレイヤー位置更新
+// プレイヤー位置
 // =========================================
 
 function updatePlayerPosition() {
@@ -273,36 +382,50 @@ const keys = {
 };
 
 
-document.addEventListener("keydown", (event) => {
+document.addEventListener(
+    "keydown",
+    (event) => {
 
-    if (event.key === "ArrowLeft") {
-        keys.left = true;
-        event.preventDefault();
+        if (event.key === "ArrowLeft") {
+
+            keys.left = true;
+
+            event.preventDefault();
+
+        }
+
+
+        if (event.key === "ArrowRight") {
+
+            keys.right = true;
+
+            event.preventDefault();
+
+        }
+
     }
+);
 
-    if (event.key === "ArrowRight") {
-        keys.right = true;
-        event.preventDefault();
+
+document.addEventListener(
+    "keyup",
+    (event) => {
+
+        if (event.key === "ArrowLeft") {
+            keys.left = false;
+        }
+
+
+        if (event.key === "ArrowRight") {
+            keys.right = false;
+        }
+
     }
-
-});
-
-
-document.addEventListener("keyup", (event) => {
-
-    if (event.key === "ArrowLeft") {
-        keys.left = false;
-    }
-
-    if (event.key === "ArrowRight") {
-        keys.right = false;
-    }
-
-});
+);
 
 
 // =========================================
-// スマホのスワイプ操作
+// スマホ スワイプ
 // =========================================
 
 let touchStartX = 0;
@@ -316,10 +439,16 @@ gameField.addEventListener(
 
         if (!gameRunning) return;
 
-        const touch = event.touches[0];
 
-        touchStartX = touch.clientX;
-        touchStartY = touch.clientY;
+        const touch =
+            event.touches[0];
+
+
+        touchStartX =
+            touch.clientX;
+
+        touchStartY =
+            touch.clientY;
 
     },
     { passive: true }
@@ -332,22 +461,33 @@ gameField.addEventListener(
 
         if (!gameRunning) return;
 
+
         event.preventDefault();
 
-        const touch = event.touches[0];
 
-        const currentX = touch.clientX;
+        const touch =
+            event.touches[0];
+
+
+        const currentX =
+            touch.clientX;
+
 
         const diffX =
             currentX - touchStartX;
 
+
         playerX += diffX;
+
 
         keepPlayerInside();
 
+
         updatePlayerPosition();
 
-        touchStartX = currentX;
+
+        touchStartX =
+            currentX;
 
     },
     { passive: false }
@@ -355,7 +495,7 @@ gameField.addEventListener(
 
 
 // =========================================
-// プレイヤーを画面内に収める
+// プレイヤーを画面内に
 // =========================================
 
 function keepPlayerInside() {
@@ -363,12 +503,15 @@ function keepPlayerInside() {
     const fieldWidth =
         gameField.clientWidth;
 
+
     const maxX =
         fieldWidth - PLAYER_WIDTH;
+
 
     if (playerX < 0) {
         playerX = 0;
     }
+
 
     if (playerX > maxX) {
         playerX = maxX;
@@ -378,20 +521,27 @@ function keepPlayerInside() {
 
 
 // =========================================
-// 敵出現
+// 敵出現開始
 // =========================================
 
 function startEnemySpawner() {
 
+    clearInterval(enemySpawnTimer);
+
+
     spawnEnemy();
+
 
     enemySpawnTimer =
         setInterval(() => {
 
             if (!gameRunning) return;
 
+
             if (enemies.length < MAX_ENEMIES) {
+
                 spawnEnemy();
+
             }
 
         }, 900);
@@ -400,87 +550,128 @@ function startEnemySpawner() {
 
 
 // =========================================
-// 敵を作る
+// 敵生成
 // =========================================
 
 function spawnEnemy() {
 
     if (!gameRunning) return;
 
-    const enemy = document.createElement("img");
 
-    const type = chooseEnemyType();
+    const enemy =
+        document.createElement("img");
 
-    enemy.src = type.image;
 
-    enemy.className = "enemy";
+    const type =
+        chooseEnemyType();
 
-    enemy.dataset.type = type.name;
 
-    enemy.dataset.speed = type.speed;
+    enemy.src =
+        type.image;
 
-    enemy.dataset.y = "-90";
+    enemy.className =
+        "enemy";
+
+    enemy.dataset.type =
+        type.name;
+
+    enemy.dataset.speed =
+        type.speed;
+
 
     const fieldWidth =
         gameField.clientWidth;
 
+
     const maxX =
         fieldWidth - ENEMY_WIDTH;
+
 
     const x =
         Math.random() * maxX;
 
-    enemy.style.left = x + "px";
-    enemy.style.top = "-90px";
+
+    enemy.style.left =
+        x + "px";
+
+    enemy.style.top =
+        "-90px";
+
 
     gameField.appendChild(enemy);
 
+
     enemies.push({
+
         element: enemy,
+
         x: x,
+
         y: -90,
+
         speed: type.speed,
-        type: type.name
+
+        type: type.name,
+
+        processed: false
+
     });
 
 }
 
 
 // =========================================
-// 敵の種類を決める
+// 敵種類
 // =========================================
 
 function chooseEnemyType() {
 
-    const random = Math.random();
+    const random =
+        Math.random();
 
-    // サム：70%
+
+    // サムくん 70%
     if (random < 0.70) {
 
         return {
+
             name: "sam",
+
             image: "images/sam.png",
+
             speed: enemySpeed
+
         };
 
     }
 
-    // コバヤシ：24%
+
+    // コバヤシくん 24%
     if (random < 0.94) {
 
         return {
+
             name: "kobayashi",
+
             image: "images/kobayashi.png",
-            speed: enemySpeed * 1.35
+
+            speed:
+                enemySpeed * 1.35
+
         };
 
     }
 
-    // だだ様：6%
+
+    // だだ様 6%
     return {
+
         name: "dada",
+
         image: "images/dada.png",
+
         speed: enemySpeed
+
     };
 
 }
@@ -494,27 +685,36 @@ function gameLoop(timestamp) {
 
     if (!gameRunning) return;
 
+
     const deltaTime =
         (timestamp - lastTime) / 1000;
+
 
     lastTime = timestamp;
 
 
     // =====================================
-    // プレイヤー移動
+    // プレイヤー
     // =====================================
 
     const playerMoveSpeed = 350;
 
+
     if (keys.left) {
+
         playerX -=
             playerMoveSpeed * deltaTime;
+
     }
 
+
     if (keys.right) {
+
         playerX +=
             playerMoveSpeed * deltaTime;
+
     }
+
 
     keepPlayerInside();
 
@@ -522,7 +722,7 @@ function gameLoop(timestamp) {
 
 
     // =====================================
-    // 敵を動かす
+    // 敵
     // =====================================
 
     for (
@@ -531,10 +731,13 @@ function gameLoop(timestamp) {
         i--
     ) {
 
-        const enemy = enemies[i];
+        const enemy =
+            enemies[i];
+
 
         enemy.y +=
             enemy.speed * deltaTime;
+
 
         enemy.element.style.top =
             enemy.y + "px";
@@ -545,12 +748,12 @@ function gameLoop(timestamp) {
 
             if (enemy.type === "dada") {
 
-                // だだ様はゲームオーバーにならない
                 handleDada(enemy);
 
             } else {
 
                 gameOver();
+
                 return;
 
             }
@@ -558,7 +761,7 @@ function gameLoop(timestamp) {
         }
 
 
-        // 画面外へ行った
+        // 画面外
         if (
             enemy.y >
             gameField.clientHeight + 100
@@ -568,7 +771,8 @@ function gameLoop(timestamp) {
 
             enemies.splice(i, 1);
 
-            // だだ様以外ならスコア加算
+
+            // だだ様以外を避けたら得点
             if (enemy.type !== "dada") {
 
                 score++;
@@ -584,15 +788,18 @@ function gameLoop(timestamp) {
 
 
     // =====================================
-    // 時間経過で少しずつ速くする
+    // 難易度上昇
     // =====================================
 
     enemySpeed +=
         3 * deltaTime;
 
-    // 上がりすぎ防止
+
     enemySpeed =
-        Math.min(enemySpeed, 330);
+        Math.min(
+            enemySpeed,
+            330
+        );
 
 
     animationId =
@@ -609,8 +816,10 @@ function checkCollision(enemy) {
 
     if (!player) return false;
 
+
     const playerRect =
         player.getBoundingClientRect();
+
 
     const enemyRect =
         enemy.element.getBoundingClientRect();
@@ -642,41 +851,52 @@ function checkCollision(enemy) {
 
 function handleDada(enemy) {
 
-    // だだ様を一度だけ処理
     if (enemy.processed) return;
+
 
     enemy.processed = true;
 
+
     enemy.element.remove();
+
 
     const index =
         enemies.indexOf(enemy);
 
+
     if (index !== -1) {
+
         enemies.splice(index, 1);
+
     }
 
 
-    // ゲームを一時停止
     gameRunning = false;
 
 
-    const dadaEvent =
-        document.getElementById("dadaEvent");
-
-    dadaEvent.classList.remove("hidden");
+    dadaEvent.classList.remove(
+        "hidden"
+    );
 
 
     setTimeout(() => {
 
-        dadaEvent.classList.add("hidden");
+        dadaEvent.classList.add(
+            "hidden"
+        );
+
 
         gameRunning = true;
 
-        lastTime = performance.now();
+
+        lastTime =
+            performance.now();
+
 
         animationId =
-            requestAnimationFrame(gameLoop);
+            requestAnimationFrame(
+                gameLoop
+            );
 
     }, 2000);
 
@@ -691,46 +911,343 @@ function gameOver() {
 
     if (!gameRunning) return;
 
+
     gameRunning = false;
 
 
-    // タイマー停止
-    clearInterval(enemySpawnTimer);
+    clearInterval(
+        enemySpawnTimer
+    );
 
 
-    // アニメーション停止
     if (animationId) {
-        cancelAnimationFrame(animationId);
+
+        cancelAnimationFrame(
+            animationId
+        );
+
     }
 
 
-    // 敵削除
-    enemies.forEach((enemy) => {
-        enemy.element.remove();
-    });
+    enemies.forEach(
+        (enemy) => {
+
+            enemy.element.remove();
+
+        }
+    );
+
 
     enemies = [];
 
 
-    // プレイヤー削除
     if (player) {
+
         player.remove();
+
         player = null;
+
     }
 
 
-    // スマホ案内を隠す
-    mobileGuide.classList.add("hidden");
+    mobileGuide.classList.add(
+        "hidden"
+    );
 
 
-    // スコア表示
     finalScore.textContent =
         score;
 
 
-    // ゲームオーバー画面
-    gameScreen.classList.add("hidden");
+    playerName.value = "";
 
-    gameOverScreen.classList.remove("hidden");
+
+    gameScreen.classList.add(
+        "hidden"
+    );
+
+
+    gameOverScreen.classList.remove(
+        "hidden"
+    );
 
 }
+
+
+// =========================================
+// ランキング登録ボタン
+// =========================================
+
+rankingSubmitButton.addEventListener(
+    "click",
+    async () => {
+
+        const name =
+            playerName.value.trim();
+
+
+        // 名前が空だった場合
+        if (!name) {
+
+            rankingMessage.textContent =
+                "ニックネームを入力してね！";
+
+            return;
+
+        }
+
+
+        // ボタン連打防止
+        rankingSubmitButton.disabled =
+            true;
+
+
+        rankingSubmitButton.textContent =
+            "登録中……";
+
+
+        rankingMessage.textContent =
+            "";
+
+
+        try {
+
+            // =================================
+            // Firebaseへ保存
+            // =================================
+
+            await addDoc(
+                rankingCollection,
+                {
+
+                    name: name,
+
+                    score: score,
+
+                    createdAt:
+                        serverTimestamp()
+
+                }
+            );
+
+
+            console.log(
+                "ランキング登録成功！"
+            );
+
+
+            // =================================
+            // ランキング取得
+            // =================================
+
+            await showRanking(name);
+
+
+        } catch (error) {
+
+            console.error(
+                "ランキング登録エラー：",
+                error
+            );
+
+
+            rankingMessage.textContent =
+                "ランキング登録に失敗しました……";
+
+
+            rankingSubmitButton.disabled =
+                false;
+
+
+            rankingSubmitButton.textContent =
+                "ランキングに登録！";
+
+        }
+
+    }
+);
+
+
+// =========================================
+// ランキング表示
+// =========================================
+
+async function showRanking(myName) {
+
+    try {
+
+        const rankingQuery =
+            query(
+                rankingCollection,
+                orderBy("score", "desc"),
+                limit(100)
+            );
+
+
+        const snapshot =
+            await getDocs(
+                rankingQuery
+            );
+
+
+        const rankings = [];
+
+
+        snapshot.forEach(
+            (doc) => {
+
+                rankings.push({
+
+                    id: doc.id,
+
+                    name:
+                        doc.data().name || "名無し",
+
+                    score:
+                        Number(
+                            doc.data().score || 0
+                        )
+
+                });
+
+            }
+        );
+
+
+        // =================================
+        // 自分の順位
+        // =================================
+
+        const myIndex =
+            rankings.findIndex(
+                (entry) => {
+
+                    return (
+                        entry.name === myName &&
+                        entry.score === score
+                    );
+
+                }
+            );
+
+
+        // =================================
+        // リストを空にする
+        // =================================
+
+        rankingList.innerHTML = "";
+
+
+        // =================================
+        // TOP10
+        // =================================
+
+        const top10 =
+            rankings.slice(0, 10);
+
+
+        top10.forEach(
+            (entry, index) => {
+
+                const li =
+                    document.createElement("li");
+
+
+                const rank =
+                    index + 1;
+
+
+                li.textContent =
+                    `${rank}位　${entry.name}　${entry.score}体`;
+
+
+                rankingList.appendChild(li);
+
+            }
+        );
+
+
+        // =================================
+        // 自分の順位メッセージ
+        // =================================
+
+        if (myIndex === -1) {
+
+            rankingMessage.textContent =
+                "101位以下は圏外です！";
+
+        } else {
+
+            const myRank =
+                myIndex + 1;
+
+
+            rankingMessage.textContent =
+                `あなたは ${myRank}位！　${score}体回避！`;
+
+        }
+
+
+        // =================================
+        // ランキング画面
+        // =================================
+
+        gameOverScreen.classList.add(
+            "hidden"
+        );
+
+
+        rankingScreen.classList.remove(
+            "hidden"
+        );
+
+
+        rankingSubmitButton.disabled =
+            false;
+
+
+        rankingSubmitButton.textContent =
+            "ランキングに登録！";
+
+
+    } catch (error) {
+
+        console.error(
+            "ランキング取得エラー：",
+            error
+        );
+
+
+        rankingMessage.textContent =
+            "ランキングの取得に失敗しました……";
+
+
+        rankingSubmitButton.disabled =
+            false;
+
+
+        rankingSubmitButton.textContent =
+            "ランキングに登録！";
+
+    }
+
+}
+
+
+// =========================================
+// リトライ
+// =========================================
+
+retryButton.addEventListener(
+    "click",
+    () => {
+
+        rankingScreen.classList.add(
+            "hidden"
+        );
+
+
+        startGame();
+
+    }
+);
