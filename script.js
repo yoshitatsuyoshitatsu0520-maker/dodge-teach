@@ -708,7 +708,7 @@ function chooseEnemyType() {
 
 
     // コバヤシくん 24%
-    if (random < 0.94) {
+    if (random < 0.96) {
 
         return {
 
@@ -717,7 +717,7 @@ function chooseEnemyType() {
             image: "images/kobayashi.png",
 
             speed:
-                enemySpeed * 1.35
+                enemySpeed * 1.5
 
         };
 
@@ -892,13 +892,13 @@ if (
     // =====================================
 
     enemySpeed +=
-        3 * deltaTime;
+        15 * deltaTime;
 
 
     enemySpeed =
         Math.min(
             enemySpeed,
-            330
+            1000
         );
 
 
