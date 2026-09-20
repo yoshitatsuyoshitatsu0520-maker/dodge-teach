@@ -1,0 +1,602 @@
+/* =========================================
+   避けろ！！ティーチママ
+   style.css
+========================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    min-height: 100%;
+}
+
+body {
+    background: #dfeaf5;
+    color: #333;
+    font-family:
+        "Mochiy Pop One",
+        "Hiragino Kaku Gothic ProN",
+        "Yu Gothic",
+        sans-serif;
+
+    overflow: hidden;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+}
+
+/* =========================================
+   共通
+========================================= */
+
+.screen {
+    width: 100vw;
+    height: 100vh;
+    min-height: 100dvh;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* =========================================
+   ローディング画面
+========================================= */
+
+#loadingScreen {
+    background:
+        radial-gradient(circle at 20% 20%, #ffffff 0 5%, transparent 6%),
+        radial-gradient(circle at 80% 70%, #ffffff 0 4%, transparent 5%),
+        linear-gradient(180deg, #dcecff, #b9d2ec);
+
+    text-align: center;
+}
+
+#loadingScreen h1 {
+    margin: 0 0 25px;
+    font-size: clamp(28px, 8vw, 52px);
+    color: #42658a;
+    text-shadow:
+        3px 3px 0 #ffffff,
+        5px 5px 0 rgba(80, 110, 140, 0.2);
+}
+
+#loadingText {
+    margin: 0 0 15px;
+    font-size: 16px;
+}
+
+#loadingBar {
+    width: min(80vw, 400px);
+    height: 24px;
+
+    background: rgba(255, 255, 255, 0.7);
+    border: 3px solid #7898b8;
+    border-radius: 999px;
+
+    overflow: hidden;
+}
+
+#loadingProgress {
+    width: 0%;
+    height: 100%;
+
+    background: linear-gradient(
+        90deg,
+        #91bde8,
+        #b9d8f5
+    );
+
+    border-radius: 999px;
+
+    transition: width 0.2s ease;
+}
+
+#loadingPercent {
+    margin-top: 10px;
+    font-size: 14px;
+    color: #526b82;
+}
+
+/* =========================================
+   タイトル画面
+========================================= */
+
+#titleScreen {
+    background:
+        radial-gradient(circle at 15% 20%, #ffffff 0 4%, transparent 5%),
+        radial-gradient(circle at 85% 75%, #ffffff 0 5%, transparent 6%),
+        linear-gradient(180deg, #cfe4f7, #eaf3fb);
+}
+
+#titleScreen h1 {
+    margin: 0;
+
+    text-align: center;
+
+    font-size: clamp(34px, 10vw, 64px);
+    line-height: 1.35;
+
+    color: #507ba4;
+
+    text-shadow:
+        4px 4px 0 #ffffff,
+        7px 7px 0 rgba(75, 110, 145, 0.2);
+}
+
+#titleScreen p {
+    margin: 25px 0 35px;
+
+    text-align: center;
+    line-height: 1.8;
+
+    font-size: clamp(14px, 4vw, 20px);
+}
+
+/* =========================================
+   ボタン
+========================================= */
+
+button {
+    font-family: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+#startButton,
+#rankingSubmitButton,
+#retryButton {
+    border: none;
+
+    padding: 15px 35px;
+
+    border-radius: 999px;
+
+    background: #6e9bc4;
+    color: white;
+
+    font-size: 18px;
+
+    box-shadow:
+        0 6px 0 #527b9f,
+        0 10px 20px rgba(50, 80, 110, 0.2);
+
+    transition:
+        transform 0.1s,
+        box-shadow 0.1s;
+}
+
+#startButton:hover,
+#rankingSubmitButton:hover,
+#retryButton:hover {
+    transform: translateY(-2px);
+}
+
+#startButton:active,
+#rankingSubmitButton:active,
+#retryButton:active {
+    transform: translateY(5px);
+
+    box-shadow:
+        0 1px 0 #527b9f,
+        0 4px 10px rgba(50, 80, 110, 0.2);
+}
+
+/* =========================================
+   ゲーム画面
+========================================= */
+
+#gameScreen {
+    position: relative;
+
+    padding: 0;
+
+    background: #eaf2f8;
+
+    justify-content: flex-start;
+}
+
+/* スコア */
+
+#scoreDisplay {
+    position: absolute;
+
+    top: 12px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    z-index: 100;
+
+    padding: 8px 18px;
+
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.9);
+
+    border: 2px solid #7898b8;
+
+    font-size: 16px;
+
+    box-shadow: 0 4px 10px rgba(50, 80, 110, 0.15);
+}
+
+/* =========================================
+   ゲームフィールド
+========================================= */
+
+#gameField {
+    position: relative;
+
+    width: min(100vw, 500px);
+    height: 100vh;
+    height: 100dvh;
+
+    overflow: hidden;
+
+    background:
+        linear-gradient(
+            90deg,
+            rgba(255,255,255,0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(
+            rgba(255,255,255,0.35) 1px,
+            transparent 1px
+        ),
+        linear-gradient(180deg, #dcebf7, #eef5fa);
+
+    background-size: 50px 50px;
+
+    border-left: 3px solid rgba(90, 120, 145, 0.25);
+    border-right: 3px solid rgba(90, 120, 145, 0.25);
+}
+
+/* =========================================
+   プレイヤー・敵キャラ共通
+========================================= */
+
+.game-character {
+    position: absolute;
+
+    pointer-events: none;
+
+    object-fit: contain;
+
+    will-change: transform;
+}
+
+/* ティーチ */
+
+.player {
+    position: absolute;
+
+    bottom: 20px;
+
+    width: 90px;
+    height: 90px;
+
+    z-index: 20;
+
+    object-fit: contain;
+
+    pointer-events: none;
+
+    will-change: left;
+}
+
+/* =========================================
+   落下キャラクター
+========================================= */
+
+.enemy {
+    position: absolute;
+
+    top: -100px;
+
+    width: 75px;
+    height: 75px;
+
+    object-fit: contain;
+
+    z-index: 10;
+
+    pointer-events: none;
+
+    will-change: transform;
+}
+
+/* =========================================
+   モバイル操作案内
+========================================= */
+
+#mobileGuide {
+    position: fixed;
+
+    left: 50%;
+    bottom: 15px;
+
+    transform: translateX(-50%);
+
+    z-index: 200;
+
+    width: min(90vw, 450px);
+
+    padding: 10px 15px;
+
+    border-radius: 999px;
+
+    background: rgba(255, 255, 255, 0.85);
+
+    border: 2px solid #a3bad0;
+
+    text-align: center;
+
+    font-size: 12px;
+
+    color: #526b82;
+
+    pointer-events: none;
+}
+
+#mobileGuide p {
+    margin: 0;
+}
+
+/* =========================================
+   だだ様イベント
+========================================= */
+
+#dadaEvent {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 500;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.7);
+
+    animation: dadaFadeIn 0.2s ease;
+}
+
+#dadaEvent img {
+    max-width: 90vw;
+    max-height: 80vh;
+
+    object-fit: contain;
+
+    animation: dadaPop 0.3s ease;
+}
+
+@keyframes dadaFadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes dadaPop {
+    from {
+        transform: scale(0.7);
+    }
+
+    to {
+        transform: scale(1);
+    }
+}
+
+/* =========================================
+   ゲームオーバー
+========================================= */
+
+#gameOverScreen {
+    background:
+        radial-gradient(
+            circle,
+            #ffffff 0%,
+            #f0f5f9 45%,
+            #d8e3ec 100%
+        );
+
+    text-align: center;
+}
+
+#gameOverScreen h2 {
+    margin: 0 0 20px;
+
+    font-size: clamp(22px, 6vw, 36px);
+
+    color: #526d84;
+}
+
+#gameOverScreen p {
+    font-size: 18px;
+}
+
+#finalScore {
+    font-size: 32px;
+    font-weight: bold;
+    color: #527da4;
+}
+
+#playerName {
+    width: min(80vw, 320px);
+
+    margin: 20px 0;
+
+    padding: 13px 18px;
+
+    border: 3px solid #9bb4ca;
+    border-radius: 999px;
+
+    outline: none;
+
+    background: white;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    text-align: center;
+}
+
+#playerName:focus {
+    border-color: #668fb4;
+}
+
+/* =========================================
+   ランキング
+========================================= */
+
+#rankingScreen {
+    background:
+        linear-gradient(
+            180deg,
+            #e6f1fa,
+            #f8fbfd
+        );
+
+    text-align: center;
+
+    overflow-y: auto;
+}
+
+#rankingScreen h2 {
+    margin: 0 0 20px;
+
+    font-size: clamp(26px, 7vw, 40px);
+
+    color: #567b9c;
+}
+
+#rankingList {
+    width: min(90vw, 450px);
+
+    margin: 0 auto 15px;
+    padding: 0;
+
+    text-align: left;
+
+    list-style-position: inside;
+}
+
+#rankingList li {
+    margin: 8px 0;
+
+    padding: 10px 15px;
+
+    border-radius: 15px;
+
+    background: rgba(255, 255, 255, 0.9);
+
+    border: 2px solid #d1dfe9;
+
+    font-size: 14px;
+
+    box-shadow: 0 3px 8px rgba(70, 100, 125, 0.08);
+}
+
+#rankingMessage {
+    min-height: 25px;
+
+    margin: 5px 0 20px;
+
+    font-size: 14px;
+
+    color: #60788c;
+}
+
+/* =========================================
+   スマホ
+========================================= */
+
+@media (max-width: 600px) {
+
+    .screen {
+        padding: 15px;
+    }
+
+    #titleScreen h1 {
+        font-size: 40px;
+    }
+
+    #titleScreen p {
+        font-size: 14px;
+        margin: 20px 0 30px;
+    }
+
+    #startButton,
+    #rankingSubmitButton,
+    #retryButton {
+        font-size: 16px;
+        padding: 13px 28px;
+    }
+
+    #scoreDisplay {
+        top: 8px;
+        font-size: 14px;
+    }
+
+    .player {
+        width: 75px;
+        height: 75px;
+        bottom: 15px;
+    }
+
+    .enemy {
+        width: 65px;
+        height: 65px;
+    }
+
+    #mobileGuide {
+        bottom: 8px;
+        font-size: 10px;
+        padding: 8px 12px;
+    }
+
+    #rankingList {
+        width: 95vw;
+    }
+}
+
+/* =========================================
+   小さいスマホ
+========================================= */
+
+@media (max-height: 650px) {
+
+    #titleScreen h1 {
+        font-size: 32px;
+    }
+
+    #titleScreen p {
+        margin: 12px 0 18px;
+    }
+
+    #startButton {
+        padding: 10px 25px;
+    }
+
+    #gameOverScreen h2 {
+        font-size: 24px;
+    }
+}
