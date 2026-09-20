@@ -37,7 +37,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
-
+let gameStartTime = 0;
 // =========================================
 // サウンド
 // =========================================
@@ -149,7 +149,17 @@ const PLAYER_HEIGHT = 90;
 const ENEMY_WIDTH = 75;
 const ENEMY_HEIGHT = 75;
 
-const MAX_ENEMIES = 3;
+// 通常敵の最大数
+const MAX_ENEMIES = 8;
+
+// 敵の数が1体増えるまでの秒数
+const ENEMY_COUNT_UP_INTERVAL = 10;
+
+// 通常敵の速度
+enemySpeed = BASE_ENEMY_SPEED;
+
+// だだ様の速度
+const DADA_SPEED = 180;
 
 
 // =========================================
@@ -352,7 +362,7 @@ bgm.play().catch((error) => {
 
     gameField.innerHTML = "";
 
-
+gameStartTime = performance.now();
     gameRunning = true;
 
 
@@ -572,24 +582,28 @@ function startEnemySpawner() {
 
     clearInterval(enemySpawnTimer);
 
-
     spawnEnemy();
-
 
     enemySpawnTimer =
         setInterval(() => {
 
             if (!gameRunning) return;
 
+            const elapsedTime =
+                (performance.now() - gameStartTime) / 1000;
 
-            if (enemies.length < MAX_ENEMIES) {
+            // 10秒ごとに最大敵数を1体増やす
+            const currentMaxEnemies =
+                Math.min(
+                    3 + Math.floor(elapsedTime / ENEMY_COUNT_UP_INTERVAL),
+                    MAX_ENEMIES
+                );
 
+            if (enemies.length < currentMaxEnemies) {
                 spawnEnemy();
-
             }
 
         }, 900);
-
 }
 
 
@@ -713,14 +727,10 @@ function chooseEnemyType() {
 
     // だだ様 6%
     return {
-
-        name: "dada",
-
-        image: "images/dada.png",
-
-        speed: enemySpeed
-
-    };
+    name: "dada",
+    image: "images/dada.png",
+    speed: DADA_SPEED
+};
 
 }
 
