@@ -150,18 +150,17 @@ const ENEMY_WIDTH = 75;
 const ENEMY_HEIGHT = 75;
 
 // 通常敵の最大数
+// 通常敵の最大数
 const MAX_ENEMIES = 8;
 
 // 敵の数が1体増えるまでの秒数
 const ENEMY_COUNT_UP_INTERVAL = 10;
 
-// 通常敵の速度
-enemySpeed = BASE_ENEMY_SPEED;
+// 通常敵の初期速度
+const BASE_ENEMY_SPEED = 180;
 
 // だだ様の速度
 const DADA_SPEED = 180;
-
-
 // =========================================
 // ゲーム状態
 // =========================================
@@ -355,7 +354,7 @@ bgm.play().catch((error) => {
 
     scoreValue.textContent = "0";
 
-    enemySpeed = 180;
+    enemySpeed = BASE_ENEMY_SPEED;
 
     enemies = [];
 
