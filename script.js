@@ -38,6 +38,29 @@ const app = initializeApp(firebaseConfig);
 
 const db = getFirestore(app);
 
+// =========================================
+// サウンド
+// =========================================
+
+const bgm = new Audio("sounds/bgm.mp3");
+const spawnSE = new Audio("sounds/spawn.mp3");
+const moveSE = new Audio("sounds/move.mp3");
+const hitSE = new Audio("sounds/hit.mp3");
+const gameoverSE = new Audio("sounds/gameover.mp3");
+const dadaSE = new Audio("sounds/dada.mp3");
+
+
+// BGM設定
+bgm.loop = true;
+bgm.volume = 0.35;
+
+
+// SE音量
+spawnSE.volume = 0.5;
+moveSE.volume = 0.5;
+hitSE.volume = 0.7;
+gameoverSE.volume = 0.8;
+dadaSE.volume = 0.8;
 
 // ランキング専用コレクション
 const rankingCollection =
@@ -150,6 +173,8 @@ let animationId = null;
 let lastTime = 0;
 
 let enemySpeed = 180;
+
+let lastMoveSoundTime = 0;
 
 
 // =========================================
@@ -295,6 +320,12 @@ function startGame() {
 
 
     mobileGuide.classList.remove("hidden");
+
+    bgm.currentTime = 0;
+
+bgm.play().catch((error) => {
+    console.log("BGMを再生できませんでした：", error);
+});
 
 
     score = 0;
@@ -617,6 +648,10 @@ function spawnEnemy() {
 
     });
 
+    spawnSE.currentTime = 0;
+
+spawnSE.play().catch(() => {});
+
 }
 
 
@@ -700,20 +735,44 @@ function gameLoop(timestamp) {
     const playerMoveSpeed = 350;
 
 
-    if (keys.left) {
+    let isMoving = false;
 
-        playerX -=
-            playerMoveSpeed * deltaTime;
+
+if (keys.left) {
+
+    playerX -=
+        playerMoveSpeed * deltaTime;
+
+    isMoving = true;
+
+}
+
+
+if (keys.right) {
+
+    playerX +=
+        playerMoveSpeed * deltaTime;
+
+    isMoving = true;
+
+}
+
+
+if (isMoving) {
+
+    const now = performance.now();
+
+    if (now - lastMoveSoundTime > 150) {
+
+        moveSE.currentTime = 0;
+
+        moveSE.play().catch(() => {});
+
+        lastMoveSoundTime = now;
 
     }
 
-
-    if (keys.right) {
-
-        playerX +=
-            playerMoveSpeed * deltaTime;
-
-    }
+}
 
 
     keepPlayerInside();
@@ -748,15 +807,21 @@ function gameLoop(timestamp) {
 
             if (enemy.type === "dada") {
 
-                handleDada(enemy);
+    handleDada(enemy);
 
-            } else {
+} else {
 
-                gameOver();
+    // 💥 ヒットSE
+    hitSE.currentTime = 0;
 
-                return;
+    hitSE.play().catch(() => {});
 
-            }
+
+    gameOver();
+
+    return;
+
+}
 
         }
 
@@ -873,6 +938,11 @@ function handleDada(enemy) {
 
     gameRunning = false;
 
+    // 👑 だだ様SE
+dadaSE.currentTime = 0;
+
+dadaSE.play().catch(() => {});
+
 
     dadaEvent.classList.remove(
         "hidden"
@@ -913,6 +983,13 @@ function gameOver() {
 
 
     gameRunning = false;
+
+    bgm.pause();
+bgm.currentTime = 0;
+
+    gameoverSE.currentTime = 0;
+
+gameoverSE.play().catch(() => {});
 
 
     clearInterval(
