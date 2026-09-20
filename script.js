@@ -840,30 +840,40 @@ if (isMoving) {
 
 
         // 画面外
-        if (
-            enemy.y >
-            gameField.clientHeight + 100
-        ) {
+        // 画面外
+if (
+    enemy.y >
+    gameField.clientHeight + 100
+) {
 
-            enemy.element.remove();
+    // =====================================
+    // だだ様が画面外まで落ちた
+    // =====================================
+    if (enemy.type === "dada") {
 
-            enemies.splice(i, 1);
+        handleDada(enemy);
 
-
-            // だだ様以外を避けたら得点
-            if (enemy.type !== "dada") {
-
-                score++;
-
-                scoreValue.textContent =
-                    score;
-
-            }
-
-        }
+        return;
 
     }
 
+
+    // =====================================
+    // 普通の敵
+    // =====================================
+
+    enemy.element.remove();
+
+    enemies.splice(i, 1);
+
+
+    // 避けたので得点
+    score++;
+
+    scoreValue.textContent =
+        score;
+
+}
 
     // =====================================
     // 難易度上昇
@@ -1314,7 +1324,7 @@ async function showRanking(myName) {
 
 
             rankingMessage.textContent =
-                `あなたは ${myRank}位！　${score}体回避！`;
+                `あなたは ${myRank}位！　${score}体回避`;
 
         }
 

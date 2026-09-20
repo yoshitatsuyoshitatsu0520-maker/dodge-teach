@@ -285,8 +285,8 @@ button {
 
     bottom: 20px;
 
-    width: 90px;
-    height: 90px;
+    width: 150px;
+    height: 150px;
 
     z-index: 20;
 
@@ -306,8 +306,8 @@ button {
 
     top: -100px;
 
-    width: 75px;
-    height: 75px;
+    width: 150px;
+    height: 150px;
 
     object-fit: contain;
 
@@ -557,14 +557,14 @@ button {
     }
 
     .player {
-        width: 75px;
-        height: 75px;
-        bottom: 15px;
+        width: 150px;
+        height: 150px;
+        bottom: 30px;
     }
 
     .enemy {
-        width: 65px;
-        height: 65px;
+        width: 150px;
+        height: 150px;
     }
 
     #mobileGuide {
