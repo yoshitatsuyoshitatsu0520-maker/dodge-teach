@@ -32,7 +32,11 @@ const firebaseConfig = {
     messagingSenderId: "350154920039",
     appId: "1:350154920039:web:20f0f1c2fbe0780e1044c2"
 };
+// =========================================
+// 一時停止
+// =========================================
 
+let isPaused = false;
 
 const app = initializeApp(firebaseConfig);
 
@@ -268,7 +272,17 @@ function preloadImages() {
 
 }
 
+const pauseButton = document.getElementById("pauseButton");
 
+pauseButton.addEventListener("click", () => {
+    isPaused = !isPaused;
+
+    if (isPaused) {
+        pauseButton.textContent = "▶ 再開";
+    } else {
+        pauseButton.textContent = "⏸ 一時停止";
+    }
+});
 // =========================================
 // 初期化
 // =========================================
@@ -362,7 +376,11 @@ bgm.play().catch((error) => {
     gameField.innerHTML = "";
 
 gameStartTime = performance.now();
-    gameRunning = true;
+
+isPaused = false;
+pauseButton.textContent = "⏸ 一時停止";
+
+gameRunning = true;
 
 
     createPlayer();
@@ -584,9 +602,9 @@ function startEnemySpawner() {
     spawnEnemy();
 
     enemySpawnTimer =
-        setInterval(() => {
+    setInterval(() => {
 
-            if (!gameRunning) return;
+        if (!gameRunning || isPaused) return;
 
             const elapsedTime =
                 (performance.now() - gameStartTime) / 1000;
@@ -742,6 +760,12 @@ function gameLoop(timestamp) {
 
     if (!gameRunning) return;
 
+    // 一時停止中はゲームの処理を止める
+    if (isPaused) {
+        lastTime = timestamp;
+        animationId = requestAnimationFrame(gameLoop);
+        return;
+    }
 
     const deltaTime =
         (timestamp - lastTime) / 1000;
