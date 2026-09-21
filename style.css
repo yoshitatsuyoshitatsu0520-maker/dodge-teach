@@ -212,7 +212,14 @@ button {
 
     touch-action: manipulation;
 }
-
+#bgmName {
+    margin-top: 6px;
+    font-size: 13px;
+    color: #fff;
+    text-align: center;
+    opacity: 0.85;
+    text-shadow: 1px 1px 2px #000;
+}
 #pauseButton:active {
     transform: scale(0.95);
 }
